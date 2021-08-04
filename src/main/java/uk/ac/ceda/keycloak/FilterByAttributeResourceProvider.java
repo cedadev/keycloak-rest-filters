@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -41,15 +42,19 @@ import javax.ws.rs.core.MediaType;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.utils.ModelToRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.keycloak.services.managers.AppAuthManager;
+import org.keycloak.services.managers.AuthenticationManager.AuthResult;
 import org.keycloak.services.resource.RealmResourceProvider;
 
 public class FilterByAttributeResourceProvider implements RealmResourceProvider {
 
     private KeycloakSession session;
+    private final AuthResult auth;
 
     public FilterByAttributeResourceProvider(KeycloakSession session)
     {
         this.session = session;
+        this.auth = new AppAuthManager.BearerTokenAuthenticator(session).authenticate();
     }
 
     public Object getResource()
@@ -61,6 +66,11 @@ public class FilterByAttributeResourceProvider implements RealmResourceProvider 
     @Path("attribute/{attributeName}/{attributeValue}")
     @Produces({MediaType.APPLICATION_JSON})
     public List<UserRepresentation> getUsersByStuff(@PathParam("attributeName") String attributeName, @PathParam("attributeValue") String attributeValue) {
+
+        if (this.auth == null || this.auth.getToken() == null) {
+            throw new NotAuthorizedException("Bearer");
+        }
+
         return session
                 .users()
                 .searchForUserByUserAttributeStream(session.getContext().getRealm(), attributeName, attributeValue)
