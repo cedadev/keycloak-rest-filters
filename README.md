@@ -5,7 +5,7 @@ Some helpful REST Resource providers for searching Keycloak.
 You can deploy this as a module by running:
 
 ```bash
-$KEYCLOAK_HOME/bin/jboss-cli.sh --command="module add --name=uk.ac.ceda.keycloak-rest-search --resources=target/keycloak-rest-search.jar --dependencies=org.keycloak.keycloak-core,org.keycloak.keycloak-server-spi,org.keycloak.keycloak-server-spi-private,javax.ws.rs.api"
+$KEYCLOAK_HOME/bin/jboss-cli.sh --command="module add --name=uk.ac.ceda.keycloak-rest-search --resources=target/keycloak-rest-search.jar --dependencies=org.keycloak.keycloak-core,org.keycloak.keycloak-server-spi,org.keycloak.keycloak-server-spi-private,org.keycloak.keycloak-services,javax.ws.rs.api"
 ```
 
 Then registering the provider by editing `standalone/configuration/standalone.xml` of your Keycloak installation and adding the module to the providers element:
