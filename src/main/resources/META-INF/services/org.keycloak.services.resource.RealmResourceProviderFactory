@@ -27,4 +27,4 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-uk.ac.ceda.keycloak.FilterByAttributeResourceProviderFactory
+uk.ac.ceda.keycloak.UserSearchResourceProviderFactory

@@ -46,12 +46,13 @@ import org.keycloak.services.managers.AppAuthManager;
 import org.keycloak.services.managers.AuthenticationManager.AuthResult;
 import org.keycloak.services.resource.RealmResourceProvider;
 
-public class FilterByAttributeResourceProvider implements RealmResourceProvider {
+public class UserSearchResourceProvider implements RealmResourceProvider
+{
 
     private KeycloakSession session;
     private final AuthResult auth;
 
-    public FilterByAttributeResourceProvider(KeycloakSession session)
+    public UserSearchResourceProvider(KeycloakSession session)
     {
         this.session = session;
         this.auth = new AppAuthManager.BearerTokenAuthenticator(session).authenticate();
@@ -64,20 +65,25 @@ public class FilterByAttributeResourceProvider implements RealmResourceProvider 
 
     @GET
     @Path("attribute/{attributeName}/{attributeValue}")
-    @Produces({MediaType.APPLICATION_JSON})
-    public List<UserRepresentation> getUsersByStuff(@PathParam("attributeName") String attributeName, @PathParam("attributeValue") String attributeValue) {
-
-        if (this.auth == null || this.auth.getToken() == null) {
+    @Produces(
+    { MediaType.APPLICATION_JSON })
+    public List<UserRepresentation> getUsersByAttribute(@PathParam("attributeName") String attributeName,
+            @PathParam("attributeValue") String attributeValue)
+    {
+        if (this.auth == null || this.auth.getToken() == null)
+        {
             throw new NotAuthorizedException("Bearer");
         }
 
-        return session
-                .users()
+        return session.users()
                 .searchForUserByUserAttributeStream(session.getContext().getRealm(), attributeName, attributeValue)
-                                .map(userModel -> ModelToRepresentation.toRepresentation(session, session.getContext().getRealm(), userModel))
-                                .collect(Collectors.toList());
-    } 
+                .map(userModel -> ModelToRepresentation.toRepresentation(session, session.getContext().getRealm(),
+                        userModel))
+                .collect(Collectors.toList());
+    }
 
-    public void close() {}
+    public void close()
+    {
+    }
 
 }

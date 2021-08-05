@@ -35,25 +35,31 @@ import org.keycloak.models.KeycloakSessionFactory;
 import org.keycloak.services.resource.RealmResourceProvider;
 import org.keycloak.services.resource.RealmResourceProviderFactory;
 
-public class FilterByAttributeResourceProviderFactory implements RealmResourceProviderFactory {
+public class UserSearchResourceProviderFactory implements RealmResourceProviderFactory
+{
 
-    public static final String ID = "filter";
+    public static final String ID = "user-search";
 
-    public String getId() {
+    public String getId()
+    {
         return ID;
     }
 
-    public RealmResourceProvider create(KeycloakSession session) {
-        return new FilterByAttributeResourceProvider(session);
+    public RealmResourceProvider create(KeycloakSession session)
+    {
+        return new UserSearchResourceProvider(session);
     }
 
-    public void init(Scope config) {
+    public void init(Scope config)
+    {
     }
 
-    public void postInit(KeycloakSessionFactory factory) {
+    public void postInit(KeycloakSessionFactory factory)
+    {
     }
 
-    public void close() {
+    public void close()
+    {
     }
 
 }
