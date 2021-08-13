@@ -39,6 +39,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.keycloak.models.GroupModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.utils.ModelToRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -77,6 +78,44 @@ public class UserSearchResourceProvider implements RealmResourceProvider
 
         return session.users()
                 .searchForUserByUserAttributeStream(session.getContext().getRealm(), attributeName, attributeValue)
+                .map(userModel -> ModelToRepresentation.toRepresentation(session, session.getContext().getRealm(),
+                        userModel))
+                .collect(Collectors.toList());
+    }
+
+    @GET
+    @Path("group/{groupId}")
+    @Produces(
+    { MediaType.APPLICATION_JSON })
+    public List<UserRepresentation> getUsersByGroup(@PathParam("groupId") String groupId)
+    {
+        if (this.auth == null || this.auth.getToken() == null)
+        {
+            throw new NotAuthorizedException("Bearer");
+        }
+
+        GroupModel group = session.groups().getGroupById(session.getContext().getRealm(), groupId);
+
+        return session.users()
+                .getGroupMembersStream(session.getContext().getRealm(), group)
+                .map(userModel -> ModelToRepresentation.toRepresentation(session, session.getContext().getRealm(),
+                        userModel))
+                .collect(Collectors.toList());
+    }
+
+    @GET
+    @Path("query/{searchQuery}")
+    @Produces(
+    { MediaType.APPLICATION_JSON })
+    public List<UserRepresentation> getUsersByQuery(@PathParam("searchQuery") String searchQuery)
+    {
+        if (this.auth == null || this.auth.getToken() == null)
+        {
+            throw new NotAuthorizedException("Bearer");
+        }
+
+        return session.users()
+                .searchForUserStream(session.getContext().getRealm(), searchQuery)
                 .map(userModel -> ModelToRepresentation.toRepresentation(session, session.getContext().getRealm(),
                         userModel))
                 .collect(Collectors.toList());
