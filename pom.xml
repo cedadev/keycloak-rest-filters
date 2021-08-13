@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>uk.ac.ceda</groupId>
 	<artifactId>keycloak-rest-search</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>User Search</name>
 	<description>Allows searching for users in Keycloak.</description>
 
